@@ -3,12 +3,10 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CuitController;
 
-Route::get('/', function () {
-    return view('home');
-})->middleware('auth');
 
-Route::middleware('Guest')->goup(function () {
+Route::middleware('guest')->group(function () {
     Route::get('/login', function () {
     return view('login');
     })->name('login');
@@ -22,4 +20,10 @@ Route::middleware('Guest')->goup(function () {
 });
 
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::middleware('auth')->group(function () {
+    Route::get('/', [CuitController::class, 'index'])->name('home');
+
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    
+    Route::post('/post', [CuitController::class, 'post'])->name('cuit.post');
+});
